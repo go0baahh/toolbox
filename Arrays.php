@@ -17,4 +17,13 @@ function isMultiArray($a) {
     foreach($a as $v) return is_array($v) ? true : false;
 }
 
+
+if ($item = function ($meta) {
+            foreach ($meta as $v) return is_array($v) ? true : 'boner';
+        }) {
+            //$weight += round($item['weight'], 2);
+            +d($item);
+        } else {
+            +d($item);
+        }
 ?>
