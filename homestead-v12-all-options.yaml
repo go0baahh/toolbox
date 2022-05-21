@@ -1,0 +1,153 @@
+---
+box: "laravel/homestead"
+SpeakFriendAndEnter: true
+version: ">= 12.0.0, < 13.0.0"
+hostname: "homestead"
+name: "homestead"
+ip: "192.168.56.56"
+memory: 2048
+cpus: 2
+natdnshostresolver: "on"
+
+provider: virtualbox
+gui: true
+paravirtprovider: kvm
+default_ssh_port: 22
+
+backup: false
+    #Turn off CFQ scheduler idling https://github.com/laravel/homestead/issues/896
+    #disable_cfq
+
+load_balancer: true
+verify_host_key: true
+
+authorize: ~/.ssh/id_rsa.pub
+keys:
+    - ~/.ssh/id_rsa
+
+# file
+copy:
+    from: ~/path/foo.bar
+    to: /home/vagrant/foo.bar
+
+# mounts
+folders:
+    - map: ~/code
+      to: /home/vagrant/code
+      type: "nfs"
+
+# php-cli
+php: "8.1"
+
+# site types
+# apache, cakephp3, crystal, elgg, frontcontroller, laravel, magento, modx, phalcon, pimcore, proxy, silverstripe,
+# spa, statamic, (symfony || symfony2), symfony4, thinkphp, umi, wordpress, yii, (zf || apigility || expressive)
+
+sites:
+    - map: homestead.test
+      to: /home/vagrant/code/public
+      port: 80
+      ssl: 443
+      php: "8.0"
+      params:
+        - key: FOO
+        - value: bar
+      xhgui: true
+      exec: true
+      headers:
+        - key: FOO
+        - value: bar
+      rewrites:
+        - map: FOO
+        - to: bar
+      (wildcard || use_wildcard): yes
+      schedule: true
+      type: laravel
+      pm2:
+        - name: "name"
+        - script: "npm"
+        - args: "run serve"
+        - cwd: null
+
+variables:
+  - key: APP_ENV
+    value: local
+
+  - key: FOO
+    value: bar
+
+features:
+    - in-flight-service: true
+    - blackfire: false
+        server_id: "server_id"
+        server_token: "server_token"
+        client_id: "client_id"
+        client_token: "client_token"
+    - cassandra: false
+    - chronograf: false
+    - couchdb: false
+    - crystal: false
+    - docker: false
+    - elasticsearch: false
+        version: 7.9.0
+    - eventstore: false
+        version 21.2.0
+    - flyway: false
+    - gearman: false
+    - golang: false
+    - grafana: false
+    - heroku: false
+    - influxdb: false
+    - mariadb: false
+    - meilisearch: false
+    - minio: false
+    - mongodb: false
+    - (mysql || mysql8): true
+    - postgresql: false
+    - neo4j: false
+    - ohmyzsh: false
+    - openresty: false
+    - pm2: false
+    - python: false
+    - r-base: false
+    - rabbitmq: false
+    - rvm: false
+    - solr: false
+    - timescaledb: false
+    - trader: false
+    - webdriver: false
+
+# (mysql || mysql8 || mariadb || postgresql || mongodb || couchdb || influxdb)
+databases:
+    - homestead
+
+services:
+    - enabled:
+        - "mysql"
+    - disabled:
+        - "postgresql@11-main"
+        - "redis"
+
+# minio: true
+# policy types: none, download, upload, public
+buckets:
+    - name: your-bucket
+      policy: public
+
+networks:
+    - type: "private_network"
+      ip: "192.168.10.20"
+      mac: ""
+
+    - type: "public_network"
+      ip: "192.168.10.20"
+      bridge: "en1: Wi-Fi (Airport)"
+      mac: ""
+
+ports:
+    - send: 50000
+      to: 5000
+
+    - send: 7777
+      to: 777
+      protocol: udp
